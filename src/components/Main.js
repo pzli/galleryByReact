@@ -2,7 +2,7 @@ require('normalize.css/normalize.css');
 require('styles/App.scss');
 
 import React from 'react';
-
+import ReactDOM from 'react-dom';
 // 利用json-loader加载json文件
 let imageData = require('json!../data/imagesData.json');
 
@@ -17,11 +17,22 @@ imageData =  ((imageDataArr) => {
 })(imageData);
 
 
+// 获得一个范围随机值
+const getRangeRandom = (low,high) => {
+  return Math.floor(Math.random() * (high - low) + low);
+}
+
+
 class ImgFigure extends React.Component {
   render(){
 
+    let styleObj = {};
+    if(this.props.arrange.pos) {
+      styleObj = this.props.arrange.pos;
+    }
+
     return (
-        <figure className="img-figure">
+        <figure className="img-figure" style={styleObj}>
           <img src={this.props.data.imageURL} alt={this.props.data.title}/>
           <figcaption>
             <h2 className="img-title">{this.props.data.title}</h2>
@@ -51,8 +62,8 @@ class AppComponent extends React.Component {
         topY: [0,0]
       }
     };
-    this.stage = {
-      imgsArrangeArr : [
+    this.state = {
+      imgsArrangeArr: [
         /*{
           pos: {
             left: "0",
@@ -65,18 +76,74 @@ class AppComponent extends React.Component {
 
   //重新排布图片的位置
   rearrange(centerIndex){
+    let imgsArrangeArr = this.state.imgsArrangeArr,
+        Constant = this.Constant,
+        centerPos = Constant.centerPos,
+        hPosRange = Constant.hPosRange,
+        vPosRange = Constant.vPosRange,
+        hPosRangeLeftSecX = hPosRange.leftSecX,
+        hPosRangeRightSecX = hPosRange.rightSecX,
+        hPosRangeY = hPosRange.y,
+        vPosRangeX = vPosRange.x,
+        vPosRangeTopY = vPosRange.topY;
+
+
+    let topImgNum = Math.ceil(Math.random() * 2); // 取0个或者1个分布在上侧
+    let imgsArrangeTopArr = [];
+
+    // 取居中的图片,设置状态信息
+    let imgsArrangeCenterArr = imgsArrangeArr.splice(centerIndex,1);
+    imgsArrangeCenterArr[0].pos = centerPos;
+
+    // 取上侧的图片,设置状态信息
+    let topImgIndex = Math.ceil(Math.random() * (imgsArrangeArr.length - topImgNum));
+    imgsArrangeTopArr = imgsArrangeArr.splice(topImgIndex, topImgNum);
+
+    imgsArrangeTopArr.forEach((value, index) => {
+      imgsArrangeTopArr[index].pos = {
+        top: getRangeRandom(vPosRangeTopY[0], vPosRangeTopY[1]),
+        left: getRangeRandom(vPosRangeX[0], vPosRangeX[1])
+      }
+    });
+
+    // 去左右两侧的图片，设置状态信息
+    for (let i = 0, j = imgsArrangeArr.length, k = j / 2; i < j; i++) {
+      let hPosRangeLorRSecX = null;
+      if(i < k) {
+        hPosRangeLorRSecX = hPosRangeLeftSecX;
+      }else {
+        hPosRangeLorRSecX = hPosRangeRightSecX;
+      }
+
+      imgsArrangeArr[i].pos = {
+        top: getRangeRandom(hPosRangeY[0], hPosRangeY[1]),
+        left: getRangeRandom(hPosRangeLorRSecX[0], hPosRangeLorRSecX[1])
+      }
+    }
+
+    // 将splice取出来的元素再添加进原数组
+
+    imgsArrangeArr.splice(centerIndex,0,imgsArrangeCenterArr[0]);
+    if(imgsArrangeTopArr && imgsArrangeTopArr[0]) {
+      imgsArrangeArr.splice(topImgIndex,0,imgsArrangeTopArr[0]);
+    }
+
+    // setState，让component重新渲染
+    this.setState({
+      imgsArrangeArr: imgsArrangeArr
+    })
 
   }
 
   componentDidMount(){
     // 获取stage的宽和高
-    let stageDOM = React.findDOMNode(this.refs.stage),
+    let stageDOM = ReactDOM.findDOMNode(this.refs.stage),
         stageW = stageDOM.scrollWidth,
         stageH = stageDOM.scrollHeight,
         halfStageW = Math.ceil(stageW/2),
         halfStageH = Math.ceil(stageH/2);
     // 获得单独一个ImgFigure的宽和高
-    let imgFigDOM = React.findDOMNode(this.refs.ImgFigure0),
+    let imgFigDOM = ReactDOM.findDOMNode(this.refs.ImgFigure0),
         imgW = imgFigDOM.scrollWidth,
         imgH = imgFigDOM.scrollHeight,
         halfImgW = Math.ceil(imgH/2),
@@ -107,15 +174,15 @@ class AppComponent extends React.Component {
         ControllerArr = [];
 
     imageData.forEach((value,index) => {
-      if(!this.stage.imgsArrangeArr[index]) {
-        this.stage.imgsArrangeArr[index] = {
+      if(!this.state.imgsArrangeArr[index]) {
+        this.state.imgsArrangeArr[index] = {
           pos: {
             left: 0,
             top: 0
           }
         }
       }
-      ImageArr.push(<ImgFigure data={value} ref={"ImgFigure"+index}/>)
+      ImageArr.push(<ImgFigure data={value} ref={"ImgFigure"+index} arrange={this.state.imgsArrangeArr[index]} />)
 
     })
 
