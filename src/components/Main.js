@@ -85,7 +85,34 @@ class ImgFigure extends React.Component {
 
 }
 
+class ControllerUnit extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+  handleClick(e) {
 
+    if(this.props.arrange.isCenter) {
+      this.props.inverse();
+    } else {
+      this.props.center();
+    }
+    e.stopPropagation();
+    e.preventDefault();
+  }
+  render (){
+    let ControllerUnitClassName = 'controller-unit';
+    if(this.props.arrange.isCenter){
+      ControllerUnitClassName += ' is-center';
+      if(this.props.arrange.isInverse) {
+        ControllerUnitClassName += ' is-inverse';
+      }
+    }
+    return (
+      <span className={ControllerUnitClassName} onClick={this.handleClick}></span>
+      )
+  }
+}
 class AppComponent extends React.Component {
   constructor(props){
     super(props);
@@ -267,7 +294,10 @@ class AppComponent extends React.Component {
         }
       }
       ImageArr.push(<ImgFigure data={value} ref={"ImgFigure"+index} arrange={this.state.imgsArrangeArr[index]}
-                       inverse={this.Inverse(index)} center={this.Center(index)}/>)
+                       inverse={this.Inverse(index)} center={this.Center(index)}/>);
+
+      ControllerArr.push(<ControllerUnit arrange={this.state.imgsArrangeArr[index]} 
+                       inverse={this.Inverse(index)} center={this.Center(index)}/>);
 
     })
 
@@ -277,6 +307,7 @@ class AppComponent extends React.Component {
           {ImageArr}
       	</section>
       	<nav className="controller-nav">
+          {ControllerArr}
       	</nav>
       </section>
     );
