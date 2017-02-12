@@ -51,7 +51,7 @@ body, html {
         transform-style: preserve-3d; /* 在旋转时子元素将保留其 3D 位置。 */
         transition: left .6s ease-in-out, top .6s ease-in-out, transform .6s ease-in-out;
         &.is-inverse {
-          transform: rotateY(180deg);
+          transform: rotateY(180deg) translateZ(1px);
         }
 
       }
@@ -66,7 +66,7 @@ body, html {
         box-sizing: border-box;
         text-align: center;
         color: #666;
-        transform: rotateY(180deg);
+        transform: rotateY(180deg) translateZ(1px);
         backface-visibility:hidden; /* 在旋转时保持背后看不见 */
         
         background: #fff;
