@@ -1,11 +1,14 @@
 
-import React from 'react';
-
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 
 require('./styles.scss');
 
 // 单个图片组件
-export default class ImgFigure extends React.Component {
+export class ImgFigure extends React.Component {
+  static PropTypes = {
+    imgsArrangeArr: PropTypes.array
+  };
 
   constructor(props) {
     super(props);
@@ -61,3 +64,7 @@ export default class ImgFigure extends React.Component {
   }
 
 }
+
+export default connect((state) => {return {
+  imgsArrangeArr: state.image.imgsArrangeArr
+}})(ImgFigure);

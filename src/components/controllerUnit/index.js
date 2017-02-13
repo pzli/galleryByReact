@@ -1,11 +1,15 @@
 
-import React from 'react';
-
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
 
 require('./styles.scss');
 
 // 控制组件
-export default class ControllerUnit extends React.Component {
+export  class ControllerUnit extends React.Component {
+
+  static PropTypes = {
+    imgsArrangeArr: PropTypes.array
+  }
   constructor(props) {
     super(props);
     this.handleClick = this.handleClick.bind(this);
@@ -33,3 +37,9 @@ export default class ControllerUnit extends React.Component {
       )
   }
 }
+
+export default connect((state) => {
+  return {
+    imgsArrangeArr: state.image.imgsArrangeArr
+  }
+})(ControllerUnit);
