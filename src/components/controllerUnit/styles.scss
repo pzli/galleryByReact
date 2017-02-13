@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'iconfont';
-  src: url('../fonts/icons/turn-arrow.eot') format("embedded-opentype"), /* IE9*/
-  url('../fonts/icons/turn-arrow.woff') format('woff'), /* chrome、firefox */
-  url('../fonts/icons/turn-arrow.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
-  url('../fonts/icons/turn-arrow.svg') format('svg'); /* iOS 4.1- */
+  src: url('../../fonts/icons/turn-arrow.eot') format("embedded-opentype"), /* IE9*/
+  url('../../fonts/icons/turn-arrow.woff') format('woff'), /* chrome、firefox */
+  url('../../fonts/icons/turn-arrow.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+  url('../../fonts/icons/turn-arrow.svg') format('svg'); /* iOS 4.1- */
 }
 
 @mixin dis_whole{

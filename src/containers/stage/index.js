@@ -1,16 +1,20 @@
-require('normalize.css/normalize.css');
-require('styles/App.scss');
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+import { ImgFigure } from 'components/imgFigure';
+import { ControllerUnit } from 'components/controllerUnit';
+
+require('normalize.css/normalize.css');
+require('./styles.scss');
 // 利用json-loader加载json文件
-let imageData = require('json!../data/imagesData.json');
+let imageData = require('json!../../data/imagesData.json');
 
 // 获取json文件里面每个图片的URL地址
 imageData =  ((imageDataArr) => {
 	for(let i = 0,j = imageDataArr.length; i < j; i++){
 		let image = imageDataArr[i];
-		image.imageURL = require("../images/" + image.fileName);
+		image.imageURL = require('../../images/' + image.fileName);
 		imageDataArr[i] = image;
 	}
 	return imageDataArr;
@@ -24,97 +28,12 @@ const getRangeRandom = (low,high) => {
 
 // 获得一个正负30之间的随机值
 const get30DegRandom = () => {
-  return ((Math.random() > 0.5 ? "" : "-") + Math.floor(Math.random() * 30));
+  return ((Math.random() > 0.5 ? '' : '-') + Math.floor(Math.random() * 30));
 }
 
-// 单个图片组件
-class ImgFigure extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick(e) {
-    if(this.props.arrange.isCenter) {
-      this.props.inverse();
-    } else {
-      this.props.center();
-    }
-    e.stopPropagation();
-    e.preventDefault();
-  }
-
-
-  // 渲染函数
-  render(){
-
-    let styleObj = {};
-    // 如果传进来的props里有pos属性，则使用position属性
-    if(this.props.arrange.pos) {
-      styleObj = this.props.arrange.pos;
-    }
-    // 如果传进来的props里有rotate属性，则添加这个属性，要注意浏览器厂商前缀
-    if(this.props.arrange.rotate) {
-      ["Moz" ,"Ms" ,"Webkit", ""].forEach((value) => {
-       styleObj[value + "Transform"] = "rotate(" + this.props.arrange.rotate + "deg)";
-      });
-    }
-    // 使中心图片不被遮挡
-    if(this.props.arrange.isCenter) {
-      styleObj.zIndex = 11;
-    }
-
-    let ImgFigureClassName = "img-figure";
-    ImgFigureClassName += this.props.arrange.isInverse ? " is-inverse " : "";
-
-    return (
-        <figure className={ImgFigureClassName} style={styleObj} onClick={this.handleClick}>
-          <img src={this.props.data.imageURL} alt={this.props.data.title}/>
-          <figcaption>
-            <h2 className="img-title">{this.props.data.title}</h2>
-            <div className="img-back" onClick={this.handleClick}>
-              <p>
-                {this.props.data.desc}
-              </p>
-            </div>
-          </figcaption>
-        </figure>
-      );
-  }
-
-}
-
-class ControllerUnit extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-  }
-  handleClick(e) {
-
-    if(this.props.arrange.isCenter) {
-      this.props.inverse();
-    } else {
-      this.props.center();
-    }
-    e.stopPropagation();
-    e.preventDefault();
-  }
-  render (){
-    let ControllerUnitClassName = 'controller-unit';
-    if(this.props.arrange.isCenter){
-      ControllerUnitClassName += ' is-center';
-      if(this.props.arrange.isInverse) {
-        ControllerUnitClassName += ' is-inverse';
-      }
-    }
-    return (
-      <span className={ControllerUnitClassName} onClick={this.handleClick}></span>
-      )
-  }
-}
 class AppComponent extends React.Component {
-  constructor(props){
+    constructor(props){
     super(props);
     this.Constant = {
       centerPos: { /*中心区域*/
@@ -127,7 +46,7 @@ class AppComponent extends React.Component {
         y: [0,0]
       },
       vPosRange: {
-        x: [0,0,],
+        x: [0,0],
         topY: [0,0]
       }
     };
@@ -184,7 +103,7 @@ class AppComponent extends React.Component {
         },
         rotate: get30DegRandom(),
         isCenter: false
-      }  
+      }
     });
 
     // 去左右两侧的图片，设置状态信息
@@ -293,10 +212,10 @@ class AppComponent extends React.Component {
           isInverse: false
         }
       }
-      ImageArr.push(<ImgFigure data={value} ref={"ImgFigure"+index} arrange={this.state.imgsArrangeArr[index]}
+      ImageArr.push(<ImgFigure data={value} ref={'ImgFigure'+index} arrange={this.state.imgsArrangeArr[index]}
                        inverse={this.Inverse(index)} center={this.Center(index)}/>);
 
-      ControllerArr.push(<ControllerUnit arrange={this.state.imgsArrangeArr[index]} 
+      ControllerArr.push(<ControllerUnit arrange={this.state.imgsArrangeArr[index]}
                        inverse={this.Inverse(index)} center={this.Center(index)}/>);
 
     })
@@ -319,17 +238,3 @@ AppComponent.defaultProps = {
 
 export default AppComponent;
 
-
-// 利用json存储图片信息，利用url-loader获得每个图片的url地址，存在json的每个对象里
-
-// 将stage分为img-sec和controller-nav两个部分
-
-// 将img-sec分为上、左、右三个部分，每个部分 分布不同个数的图片，每个图片的position设置为absolute，top和left值随机分布
-// 中间部分为选中的那个图片
-
-
-// controller-nav与图片的Index关联起来，也能控制图片的移动渲染
-
-// 每个图片用figure表示，里面有一个img和一个figcaption（title）
-
-//  图片可以翻转，翻转过来的文本值是json里面的每个对象的desc值
