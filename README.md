@@ -22,3 +22,4 @@ v1.0 只是利用ES6、webpack、react完成功能
 
 v2.0 将main.js三个组件分为三个单独的文件，添加redux，将相关事件用redux完成
 
+v3.0 利用immutable中的语法糖和相关的不可更改的特性修改reducer
