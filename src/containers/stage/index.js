@@ -10,6 +10,7 @@ require('normalize.css/normalize.css');
 require('./styles.scss');
 
 export class Stage extends React.Component {
+
     // PropTypes的作用是用来验证组件实例的属性是否符合要求
   static PropTypes = {
       imgsArrangeArr: PropTypes.array,
@@ -18,6 +19,8 @@ export class Stage extends React.Component {
   }
   constructor(props){
     super(props);
+    //const {dispatch, inverse, rearrange}  = this.props;
+
     this.state = {
       stage: {}
     }
@@ -80,7 +83,6 @@ export class Stage extends React.Component {
       imgW,
       imgH
     });
-
     this.setState({
       stage
     });
@@ -105,15 +107,15 @@ export class Stage extends React.Component {
   }
   // 渲染函数
   render() {
-
+    
     let ImageArr = [],
         ControllerArr = [];
 
     this.props.imageData.forEach((value,index) => {
-      ImageArr.push(<ImgFigure data={value} ref={'ImgFigure'+index} arrange={this.props.imgsArrangeArr[index]}
+      ImageArr.push(<ImgFigure data={value} key={index} ref={'ImgFigure'+index} arrange={this.props.imgsArrangeArr[index]}
                        inverse={this.Inverse(index)} center={this.Center(index)}/>);
 
-      ControllerArr.push(<ControllerUnit arrange={this.props.imgsArrangeArr[index]}
+      ControllerArr.push(<ControllerUnit key={index} arrange={this.props.imgsArrangeArr[index]}
                        inverse={this.Inverse(index)} center={this.Center(index)}/>);
 
     })
@@ -131,10 +133,11 @@ export class Stage extends React.Component {
   }
 }
 
-
-export default connect((state) =>{
+function mapStateToProps(state) {
   return {
     imgsArrangeArr: state.image.imgsArrangeArr,
     imageData: state.image.imageData
   }
-},{inverse, rearrange})(Stage);
+}
+
+export default connect(mapStateToProps,{inverse, rearrange})(Stage);

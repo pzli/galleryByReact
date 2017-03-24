@@ -1,6 +1,5 @@
 
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux';
 
 require('./styles.scss');
 
@@ -65,6 +64,3 @@ export class ImgFigure extends React.Component {
 
 }
 
-export default connect((state) => {return {
-  imgsArrangeArr: state.image.imgsArrangeArr
-}})(ImgFigure);
